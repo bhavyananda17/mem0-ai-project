@@ -35,8 +35,11 @@ else:
 st.subheader("Intent")
 
 if transcription:
-    intent_result = detect_intent(transcription)
-    st.write(intent_result)
+    try:
+        intent_result = detect_intent(transcription)
+        st.write(intent_result)
+    except Exception as e:
+        st.error(f"Intent detection error: {str(e)}")
 else:
     st.write("...")
 
