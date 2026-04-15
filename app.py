@@ -24,8 +24,11 @@ if uploaded_file is not None:
         tmp.write(uploaded_file.getbuffer())
         temp_path = tmp.name
     
-    transcription = transcribe_audio(temp_path)
-    st.write(transcription)
+    try:
+        transcription = transcribe_audio(temp_path)
+        st.write(transcription)
+    except Exception as e:
+        st.error(f"Transcription error: {str(e)}")
 else:
     st.write("...")
 
