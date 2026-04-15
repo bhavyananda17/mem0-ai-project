@@ -3,8 +3,20 @@ from stt import transcribe_audio
 from intent import detect_intent
 from tools import handle_intent
 from utils import save_uploaded_file
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 st.title("Voice AI Agent")
+
+api_key = os.getenv("GEMINI_API_KEY")
+if api_key and api_key != "your_api_key_here":
+    with st.sidebar:
+        st.success("✓ API Key loaded")
+else:
+    with st.sidebar:
+        st.error("✗ API Key not configured")
 
 if "transcription" not in st.session_state:
     st.session_state.transcription = None
