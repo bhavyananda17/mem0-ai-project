@@ -35,7 +35,7 @@ st.subheader("Intent")
 if st.session_state.transcription:
     try:
         st.session_state.intent_result = detect_intent(st.session_state.transcription)
-        st.write(st.session_state.intent_result)
+        st.write(f"**Detected:** {st.session_state.intent_result}")
     except Exception as e:
         st.error(f"Intent detection error: {str(e)}")
 else:
@@ -46,7 +46,7 @@ st.subheader("Action")
 if st.session_state.intent_result:
     try:
         st.session_state.action_result = handle_intent(st.session_state.intent_result, st.session_state.transcription)
-        st.write(st.session_state.action_result)
+        st.success(st.session_state.action_result)
     except Exception as e:
         st.error(f"Action error: {str(e)}")
 else:
