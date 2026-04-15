@@ -1,4 +1,7 @@
 import streamlit as st
+from stt import transcribe_audio
+from intent import detect_intent
+from tools import handle_intent
 
 st.title("Voice AI Agent")
 
@@ -8,13 +11,39 @@ if uploaded_file is not None:
     st.audio(uploaded_file)
 
 st.subheader("Transcription")
-st.write("...")
+
+transcription = None
+intent_result = None
+action_result = None
+
+if uploaded_file is not None:
+    import tempfile
+    import os
+    
+    with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as tmp:
+        tmp.write(uploaded_file.getbuffer())
+        temp_path = tmp.name
+    
+    transcription = transcribe_audio(temp_path)
+    st.write(transcription)
+else:
+    st.write("...")
 
 st.subheader("Intent")
-st.write("...")
+
+if transcription:
+    intent_result = detect_intent(transcription)
+    st.write(intent_result)
+else:
+    st.write("...")
 
 st.subheader("Action")
-st.write("...")
+
+if intent_result:
+    action_result = handle_intent(intent_result, transcription)
+    st.write(action_result)
+else:
+    st.write("...")
 
 st.subheader("Output")
 st.write("...")
