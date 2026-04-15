@@ -46,8 +46,11 @@ else:
 st.subheader("Action")
 
 if intent_result:
-    action_result = handle_intent(intent_result, transcription)
-    st.write(action_result)
+    try:
+        action_result = handle_intent(intent_result, transcription)
+        st.write(action_result)
+    except Exception as e:
+        st.error(f"Action error: {str(e)}")
 else:
     st.write("...")
 
