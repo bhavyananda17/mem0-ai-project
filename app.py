@@ -2,31 +2,33 @@ import streamlit as st
 from stt import transcribe_audio
 from intent import detect_intent
 from tools import handle_intent
+import tempfile
+import os
 
 st.title("Voice AI Agent")
+
+if "transcription" not in st.session_state:
+    st.session_state.transcription = None
+if "intent_result" not in st.session_state:
+    st.session_state.intent_result = None
+if "action_result" not in st.session_state:
+    st.session_state.action_result = None
 
 uploaded_file = st.file_uploader("Upload audio file", type=["wav", "mp3"])
 
 if uploaded_file is not None:
     st.audio(uploaded_file)
-
-st.subheader("Transcription")
-
-transcription = None
-intent_result = None
-action_result = None
-
-if uploaded_file is not None:
-    import tempfile
-    import os
     
     with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(uploaded_file.name)[1]) as tmp:
         tmp.write(uploaded_file.getbuffer())
         temp_path = tmp.name
-    
+
+st.subheader("Transcription")
+
+if uploaded_file is not None:
     try:
-        transcription = transcribe_audio(temp_path)
-        st.write(transcription)
+        st.session_state.transcription = transcribe_audio(temp_path)
+        st.write(st.session_state.transcription)
     except Exception as e:
         st.error(f"Transcription error: {str(e)}")
 else:
@@ -34,10 +36,10 @@ else:
 
 st.subheader("Intent")
 
-if transcription:
+if st.session_state.transcription:
     try:
-        intent_result = detect_intent(transcription)
-        st.write(intent_result)
+        st.session_state.intent_result = detect_intent(st.session_state.transcription)
+        st.write(st.session_state.intent_result)
     except Exception as e:
         st.error(f"Intent detection error: {str(e)}")
 else:
@@ -45,10 +47,10 @@ else:
 
 st.subheader("Action")
 
-if intent_result:
+if st.session_state.intent_result:
     try:
-        action_result = handle_intent(intent_result, transcription)
-        st.write(action_result)
+        st.session_state.action_result = handle_intent(st.session_state.intent_result, st.session_state.transcription)
+        st.write(st.session_state.action_result)
     except Exception as e:
         st.error(f"Action error: {str(e)}")
 else:
