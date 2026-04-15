@@ -1,14 +1,14 @@
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+from utils import ensure_output_folder
 
 load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def handle_intent(intent, text):
-    if not os.path.exists("output"):
-        os.makedirs("output")
+    ensure_output_folder()
     
     if intent == "create_file":
         filename = "output/generated_file.txt"
